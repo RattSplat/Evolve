@@ -6,7 +6,7 @@ local PLUGIN = {}
 PLUGIN.Title = "Command Help"
 PLUGIN.Description = "View the usage of a command if available."
 PLUGIN.Author = "Overv"
-PLUGIN.ChatCommand = "help"
+PLUGIN.ChatCommand = "commandhelp" --changed name so people can make their own !help menus ~MadDog
 PLUGIN.Usage = "<command>"
 
 function PLUGIN:Call( ply, args )
@@ -18,10 +18,10 @@ function PLUGIN:Call( ply, args )
 			else
 				evolve:Notify( ply, evolve.colors.red, "No help is available for that command." )
 			end
-			return 
+			return
 		end
 	end
-	
+
 	evolve:Notify( ply, evolve.colors.red, "Unknown command '" .. ( args[1] or "" ) .. "'." )
 end
 
