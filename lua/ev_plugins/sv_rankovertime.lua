@@ -12,8 +12,8 @@ PLUGIN.Privileges = { "Block ranks over time", "Unblock ranks over time" }
 
 --------- EDITABLE AREA
 -- 					rankname = { targetrank, timerequired (seconds) }
-PLUGIN.RankUps = {	["guest"] = { "respected", 60*60*6 },
-					["respected"] = { "admin", 60*60 },
+PLUGIN.RankUps = {	["guest"] = { "respected", 60*60*6 }
+					--["respected"] = { "admin", 60*60 },
 					--["admin"] = { "superadmin", 60*120 },
 					--["superadmin"] = { "owner", 60*240 },
 				 }
