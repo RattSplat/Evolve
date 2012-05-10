@@ -14,11 +14,11 @@ function PLUGIN:Call( ply, args )
 	if ( ply:EV_HasPrivilege( "Gag" ) ) then
 		local players = evolve:FindPlayer( args, ply, true )
 		local enabled = ( tonumber( args[ #args ] ) or 1 ) > 0
-		
+
 		for _, pl in ipairs( players ) do
 			pl.EV_Gagged = enabled
 		end
-		
+
 		if ( #players > 0 ) then
 			if ( enabled ) then
 				evolve:Notify( evolve.colors.blue, ply:Nick(), evolve.colors.white, " has gagged ", evolve.colors.red, evolve:CreatePlayerList( players ), evolve.colors.white, "." )
@@ -35,6 +35,12 @@ end
 
 function PLUGIN:PlayerSay( ply, msg )
 	if ( ply.EV_Gagged and string.Left( msg, 1 ) != "!" and string.Left( msg, 1 ) != "/" ) then return "" end
+end
+
+--Disables players voice! ~MadDog
+function PLUGIN:PlayerCanHearPlayersVoice( Listener, Talker )
+	if (!IsValid(Talker)) then return end
+	if (Talker.EV_Gagged) then return false end
 end
 
 function PLUGIN:Menu( arg, players )
