@@ -44,10 +44,10 @@ if ( SERVER ) then
 		end
 	end
 else
-	PLUGIN.iconUser = surface.GetTextureID( "gui/silkicons/user" )
-	PLUGIN.iconChat = surface.GetTextureID( "gui/silkicons/comments" )
-	PLUGIN.iconDeveloper = surface.GetTextureID( "gui/silkicons/emoticon_smile" )
-	PLUGIN.iconAFK = surface.GetTextureID( "gui/silkicons/arrow_refresh" )
+	PLUGIN.iconUser = surface.GetTextureID( "icon16/user.png" )
+	PLUGIN.iconChat = surface.GetTextureID( "icon16/comments.png" )
+	PLUGIN.iconDeveloper = surface.GetTextureID( "icon16/emoticon_smile.png" )
+	PLUGIN.iconAFK = surface.GetTextureID( "icon16/arrow_refresh.png" )
 
 	function PLUGIN:HUDPaint()
 		if ( !evolve.installed or !LocalPlayer():EV_HasPrivilege( "Player names" ) or ( !GAMEMODE.IsSandboxDerived ) ) then return end

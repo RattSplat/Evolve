@@ -93,7 +93,7 @@ function PLUGIN:Initialize()
 	local tools = {}
 
 	if ( GAMEMODE.IsSandboxDerived ) then
-		for _, val in ipairs( file.FindInLua( "weapons/gmod_tool/stools/*.lua" )  ) do
+		for _, val in ipairs( file.Find( "weapons/gmod_tool/stools/*.lua", LUA_PATH )  ) do
 			local _, __, class = string.find( val, "([%w_]*)\.lua" )
 			table.insert( tools, "#" .. class )
 		end
@@ -102,8 +102,8 @@ function PLUGIN:Initialize()
 	table.Add( evolve.privileges, tools )
 
 	--this table is kept so when new entities/tools are added they get added to every rank
-	if ( file.Exists( "ev_allentitiescache.txt" ) ) then
-		evolve.allentities = glon.decode( file.Read( "ev_allentitiescache.txt" ) )
+	if ( file.Exists( "ev_allentitiescache.txt", "DATA" ) ) then
+		evolve.allentities = glon.decode( file.Read( "ev_allentitiescache.txt", "DATA" ) )
 	else
 		evolve.allentities = {}
 	end

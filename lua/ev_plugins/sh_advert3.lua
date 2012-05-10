@@ -35,8 +35,8 @@ if (SERVER) then
 
 	adverts = {}
 	adverts.Stored = {}
-	if (#file.Find(adFileName) > 0) then
-		adverts.Stored = glon.decode(file.Read(adFileName))
+	if (#file.Find(adFileName, "DATA") > 0) then
+		adverts.Stored = glon.decode(file.Read(adFileName, "DATA"))
 		for k,v in pairs(adverts.Stored) do
 			timer.Create("Advert_"..k, v.Time, 0, function()
 				if (#player.GetAll() > 0) then

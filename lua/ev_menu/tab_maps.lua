@@ -2,14 +2,14 @@
 local TAB = {}
 TAB.Title = "Maps"
 TAB.Description = "Used to change maps."
-TAB.Icon = "gui/silkicons/picture_edit"
+TAB.Icon = "icon16/picture_edit.png"
 TAB.Author = "MDave" --Edited by MadDog
 TAB.Width = 500
 TAB.Privileges = { "Maps Menu" }
 TAB.ToUpdate = nil
 
 if ( SERVER )then
-	TAB.Maplist = file.Find( "maps/*.bsp", true )
+	TAB.Maplist = file.Find( "maps/*.bsp", "GAME" )
 
 	local function StreamMaps( ply , command , args )
 		for _,v in ipairs( TAB.Maplist ) do
@@ -41,7 +41,7 @@ function TAB:SetCurrentMapicon( map )
 		map = game.GetMap()
 	end
 
-	self.MapIcon:SetImage( "maps/"..map , "maps/noicon.vmt" )
+	self.MapIcon:SetImage( "maps/noIcon.vmt" ) --TODO: Fix later when this function doesnt fail (in beta update17) ~MadDog
 	self.MapIcon:SizeToContents()
 	self.MapIcon.mappath = map
 

@@ -13,19 +13,19 @@ PLUGIN.Privileges = { "Play sound" }
 function PLUGIN:Call( ply, args )
 	if ( ply:EV_HasPrivilege( "Play sound" ) ) then
 		local sound = args[1] or self.LastSound
-		
+
 		if ( sound ) then
 			if ( string.match( sound, "^[a-zA-Z0-9/]+.wav$" ) ) then
-				if ( !file.Exists( "../sound/" .. sound ) ) then
+				if ( !file.Exists( "sound/" .. sound, "GAME" ) ) then
 					evolve:Notify( ply, evolve.colors.red, "Sound \"" .. sound .. "\" not found!" )
 					return
 				end
 			end
-			
+
 			for _, pl in ipairs( player.GetAll() ) do
 				pl:ConCommand( "play " .. sound )
 			end
-			
+
 			self.LastSound = sound
 		else
 			evolve:Notify( ply, evolve.colors.red, "No sound was specified yet!" )

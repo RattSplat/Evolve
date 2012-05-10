@@ -9,16 +9,20 @@ Any problems, let me know! thatcutekiwi@gmail.com . Thanks! Saria Parkar <3
 local TAB = {}
 TAB.Title = "Adverts"
 TAB.Description = "Add, remove, modify adverts."
-TAB.Icon = "gui/silkicons/page_white_wrench"
+TAB.Icon = "icon16/page_white_wrench.png"
 TAB.Author = "SariaFace"
 TAB.Width = 520
 TAB.Privileges = { "Advert 3 Menu" }
 
 if (SERVER) then
+	util.AddNetworkString( "EV_Adverts3_ReceiveList" )
+
 	function SendAdvertsList(target, cmd, args)
 		if (target) then
 			if (adverts and #adverts.Stored) then
-				datastream.StreamToClients(target, "EV_Adverts3_ReceiveList", adverts.Stored)
+				net.Start( "EV_Adverts3_ReceiveList" )
+				net.WriteTable( adverts.Stored )
+				net.Send(target)
 			end
 		end
 	end
@@ -133,10 +137,10 @@ else
 	vgui.Register("NewAdPanel", NewAdPanelReg, "DFrame")
 
 	adverts = {}
-	function SyncAdverts(hdl, id, enc, dec)
-		adverts = dec
-	end
-	datastream.Hook("EV_Adverts3_ReceiveList", SyncAdverts)
+	net.Receive("EV_Adverts3_ReceiveList", function( len, ply )
+		adverts = net.ReadTable()
+	end)
+
 	RunConsoleCommand("EV_Adverts3_RequestList")
 end
 --===================================================================================--

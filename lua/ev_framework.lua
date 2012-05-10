@@ -148,7 +148,7 @@ local pluginFile
 function evolve:LoadPlugins()
 	evolve.plugins = {}
 
-	local plugins = file.FindInLua( "ev_plugins/*.lua" )
+	local plugins = file.Find( "ev_plugins/*.lua", LUA_PATH )
 	for _, plugin in ipairs( plugins ) do
 		local prefix = string.Left( plugin, string.find( plugin, "_" ) - 1 )
 		pluginFile = plugin
@@ -216,7 +216,9 @@ hook.Call = function( name, gm, ... )
 end
 
 if ( SERVER ) then
-	concommand.Add( "ev_reloadplugin", function( ply, com, args )
+	util.AddNetworkString( "data.Receive" )
+
+	concommand.Add( "EV_PluginFile", function( ply, com, args )
 		if ( !ply:IsValid() and args[1] ) then
 			local found
 
@@ -237,7 +239,9 @@ if ( SERVER ) then
 				if ( prefix != "cl" ) then table.remove( evolve.plugins, found ) pluginFile = plugin include( "ev_plugins/" .. plugin ) end
 
 				if ( prefix == "sh" or prefix == "cl" ) then
-					datastream.StreamToClients( player.GetAll(), "EV_PluginFile", { Title = title, Contents = file.Read( "../lua/ev_plugins/" .. plugin ) } )
+					net.Start( "EV_PluginFile" )
+					net.WriteTable( { Title = title, Contents = file.Read( "ev_plugins/" .. plugin, LUA_PATH ) } )
+					net.Broadcast()
 				end
 			else
 				print( "[EV] Plugin '" .. tostring( args[1] ) .. "' not found!" )
@@ -245,15 +249,17 @@ if ( SERVER ) then
 		end
 	end )
 else
-	datastream.Hook( "EV_PluginFile", function( handler, id, encoded, decoded )
+	net.Receive("EV_PluginFile", function( len, ply )
+		local data = net.ReadTable()
+
 		for k, plugin in ipairs( evolve.plugins ) do
-			if ( string.lower( plugin.Title ) == string.lower( decoded.Title ) ) then
+			if ( string.lower( plugin.Title ) == string.lower( data.Title ) ) then
 				found = k
 				table.remove( evolve.plugins, k )
 			end
 		end
 
-		RunString( decoded.Contents )
+		RunString( data.Contents )
 	end )
 end
 
@@ -362,7 +368,7 @@ function _R.Entity:UniqueID() if ( !self:IsValid() ) then return 0 end end
 -------------------------------------------------------------------------------------------------------------------------*/
 
 function evolve:LoadPlayerInfo()
-	self.PlayerInfo=glon.decode(file.Read("ev_playerinfo.txt")) or {}
+	self.PlayerInfo=glon.decode(file.Read("ev_playerinfo.txt", "DATA")) or {}
 
 end
 evolve:LoadPlayerInfo()
@@ -473,7 +479,7 @@ end
 -------------------------------------------------------------------------------------------------------------------------*/
 
 // COMPATIBILITY
-evolve.compatibilityRanks = glon.decode( file.Read( "ev_ranks.txt" ) )
+evolve.compatibilityRanks = glon.decode( file.Read( "ev_ranks.txt", "DATA" ) )
 // COMPATIBILITY
 
 function _R.Player:EV_HasPrivilege( priv )
@@ -632,8 +638,8 @@ function evolve:SaveRanks()
 end
 
 function evolve:LoadRanks()
-	if ( file.Exists( "ev_userranks.txt" ) ) then
-		evolve.ranks = glon.decode( file.Read( "ev_userranks.txt" ) )
+	if ( file.Exists( "ev_userranks.txt", "DATA" ) ) then
+		evolve.ranks = glon.decode( file.Read( "ev_userranks.txt", "DATA" ) )
 	else
 		include( "ev_defaultranks.lua" )
 		evolve:SaveRanks()
@@ -720,7 +726,7 @@ usermessage.Hook( "EV_Rank", function( um )
 		evolve.ranks[id].Color = Color( um:ReadShort(), um:ReadShort(), um:ReadShort() )
 	end
 
-	evolve.ranks[id].IconTexture = surface.GetTextureID( "gui/silkicons/" .. evolve.ranks[id].Icon )
+	evolve.ranks[id].IconTexture = surface.GetTextureID( "icon16/" .. evolve.ranks[id].Icon )
 
 	if ( created ) then
 		hook.Call( "EV_RankCreated", nil, id )
@@ -1069,8 +1075,8 @@ function evolve:SaveGlobalVars()
 end
 
 function evolve:LoadGlobalVars()
-	if ( file.Exists( "ev_globalvars.txt" ) ) then
-		evolve.globalvars = glon.decode( file.Read( "ev_globalvars.txt" ) )
+	if ( file.Exists( "ev_globalvars.txt", "DATA" ) ) then
+		evolve.globalvars = glon.decode( file.Read( "ev_globalvars.txt", "DATA" ) )
 	else
 		evolve.globalvars = {}
 		evolve:SaveGlobalVars()
@@ -1095,16 +1101,16 @@ function evolve:Log( str )
 	if ( CLIENT ) then return end
 
 	local logFile = "ev_logs/" .. os.date( "%d-%m-%Y" ) .. ".txt"
-	local files = file.Find( "ev_logs/" .. os.date( "%d-%m-%Y" ) .. "*.txt" )
+	local files = file.Find( "ev_logs/" .. os.date( "%d-%m-%Y" ) .. "*.txt", "DATA" )
 	table.sort( files )
 	if ( #files > 0 ) then logFile = "ev_logs/" .. files[math.max(#files-1,1)] end
 
-	local src = file.Read( logFile ) or ""
+	local src = file.Read( logFile, "DATA" ) or ""
 	if ( #src > 200 * 1024 ) then
 		logFile = "ev_logs/" .. os.date( "%d-%m-%Y" ) .. " (" .. #files + 1 .. ").txt"
 	end
 
-	filex.Append( logFile, "[" .. os.date() .. "] " .. str .. "\n" )
+	file.Append( logFile, "[" .. os.date() .. "] " .. str .. "\n" )
 end
 
 function evolve:PlayerLogStr( ply )

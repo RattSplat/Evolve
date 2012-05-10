@@ -14,31 +14,31 @@ function PLUGIN:Call( ply, args )
 	if ( ply:EV_HasPrivilege( "Ghost" ) ) then
 		local players = evolve:FindPlayer( args, ply, true )
 		local enabled = ( tonumber( args[ #args ] ) or 1 ) > 0
-		
+
 		for _, pl in ipairs( players ) do
 			if ( enabled ) then
 				pl:SetRenderMode( RENDERMODE_NONE )
-				pl:SetColor( 255, 255, 255, 0 )
+				pl:SetColor( Color(255, 255, 255, 0) )
 				pl:SetCollisionGroup( COLLISION_GROUP_WEAPON )
-				
+
 				for _, w in ipairs( pl:GetWeapons() ) do
 					w:SetRenderMode( RENDERMODE_NONE )
-					w:SetColor( 255, 255, 255, 0 )
+					w:SetColor( Color(255, 255, 255, 0) )
 				end
 			else
 				pl:SetRenderMode( RENDERMODE_NORMAL )
-				pl:SetColor( 255, 255, 255, 255 )
+				pl:SetColor( Color(255, 255, 255, 255) )
 				pl:SetCollisionGroup( COLLISION_GROUP_PLAYER )
-				
+
 				for _, w in ipairs( pl:GetWeapons() ) do
 					w:SetRenderMode( RENDERMODE_NORMAL )
-					w:SetColor( 255, 255, 255, 255 )
+					w:SetColor( Color(255, 255, 255, 255) )
 				end
 			end
-			
+
 			pl:SetNWBool( "EV_Ghosted", enabled )
 		end
-		
+
 		if ( #players > 0 ) then
 			if ( enabled ) then
 				evolve:Notify( evolve.colors.blue, ply:Nick(), evolve.colors.white, " has ghosted ", evolve.colors.red, evolve:CreatePlayerList( players ), evolve.colors.white, "." )
@@ -60,12 +60,12 @@ end
 function PLUGIN:PlayerSpawn( ply )
 	if ( ply:GetNWBool( "EV_Ghosted", false ) ) then
 		ply:SetRenderMode( RENDERMODE_NONE )
-		ply:SetColor( 255, 255, 255, 0 )
+		ply:SetColor( Color(255, 255, 255, 0) )
 		ply:SetCollisionGroup( COLLISION_GROUP_WEAPON )
-		
+
 		for _, w in ipairs( ply:GetWeapons() ) do
 			w:SetRenderMode( RENDERMODE_NONE )
-			w:SetColor( 255, 255, 255, 0 )
+			w:SetColor( Color(255, 255, 255, 0) )
 		end
 	end
 end
@@ -73,7 +73,7 @@ end
 function PLUGIN:PlayerCanPickupWeapon( ply, wep )
 	if ( ply:GetNWBool( "EV_Ghosted", false ) ) then
 		wep:SetRenderMode( RENDERMODE_NONE )
-		wep:SetColor( 255, 255, 255, 0 )
+		wep:SetColor( Color(255, 255, 255, 0) )
 	end
 end
 
