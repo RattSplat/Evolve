@@ -9,14 +9,14 @@ PLUGIN.Author = "Overv"
 PLUGIN.Privileges = { "Player names" }
 
 if ( SERVER ) then
-	resource.AddFile( "materials/gui/silkicons/comments.vtf" )
-	resource.AddFile( "materials/gui/silkicons/comments.vmt" )
-	resource.AddFile( "materials/gui/silkicons/user_add.vtf" )
-	resource.AddFile( "materials/gui/silkicons/user_add.vmt" )
-	resource.AddFile( "materials/gui/silkicons/shield_add.vtf" )
-	resource.AddFile( "materials/gui/silkicons/shield_add.vmt" )
-	resource.AddFile( "materials/gui/silkicons/key.vtf" )
-	resource.AddFile( "materials/gui/silkicons/key.vmt" )
+	-- resource.AddFile( "materials/gui/silkicons/comments.vtf" )
+	-- resource.AddFile( "materials/gui/silkicons/comments.vmt" )
+	-- resource.AddFile( "materials/gui/silkicons/user_add.vtf" )
+	-- resource.AddFile( "materials/gui/silkicons/user_add.vmt" )
+	-- resource.AddFile( "materials/gui/silkicons/shield_add.vtf" )
+	-- resource.AddFile( "materials/gui/silkicons/shield_add.vmt" )
+	-- resource.AddFile( "materials/gui/silkicons/key.vtf" )
+	-- resource.AddFile( "materials/gui/silkicons/key.vmt" )
 
 	concommand.Add( "EV_SetChatState", function( ply, cmd, args )
 		if ( tonumber( args[1] ) ) then
@@ -89,15 +89,15 @@ else
 						surface.DrawOutlinedRect( drawPos.x, drawPos.y, w, h )
 
 						if ( pl:GetNWBool( "EV_Chatting", false ) ) then
-							surface.SetTexture( self.iconChat )
+							--surface.SetTexture( self.iconChat )
 						elseif ( pl:GetNWBool( "EV_AFK", false ) ) then
-							surface.SetTexture( self.iconAFK )
+							--surface.SetTexture( self.iconAFK )
 						elseif ( pl:SteamID() == "STEAM_0:1:11956651" ) then
-								surface.SetTexture( self.iconDeveloper )
+								--surface.SetTexture( self.iconDeveloper )
 						elseif ( evolve.ranks[ pl:EV_GetRank() ] ) then
-							surface.SetTexture( evolve.ranks[ pl:EV_GetRank() ].IconTexture )
+							--surface.SetTexture( evolve.ranks[ pl:EV_GetRank() ].IconTexture )
 						else
-							surface.SetTexture( self.iconUser )
+							--surface.SetTexture( self.iconUser )
 						end
 
 						surface.SetDrawColor( 255, 255, 255, math.Clamp( alpha * 2, 0, 255 ) )

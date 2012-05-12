@@ -6,7 +6,7 @@ local TAB = {}
 TAB.Title = "Bans"
 TAB.Description = "Manage bans."
 TAB.Icon = "icon16/exclamation.png"
-TAB.Author = "Overv"
+TAB.Author = "Overv, General Wrex"
 TAB.Width = 520
 TAB.Privileges = { "Ban menu" }
 
@@ -16,13 +16,13 @@ function TAB:Initialize( pnl )
 	self.BanList:SetMultiSelect( false )
 	self.BanList:AddColumn( "Name" ):SetFixedWidth( 100 )
 	self.BanList:AddColumn( "SteamID" ):SetFixedWidth( 125 )
-	self.BanList:AddColumn( "Reason" ):SetFixedWidth( 150 )
+	self.BanList:AddColumn( "Reason" ):SetFixedWidth( 149 )
 	self.BanList:AddColumn( "Time left" ):SetFixedWidth( 75 )
-	self.BanList:AddColumn( "Banned by" ):SetFixedWidth( 70 )
+	self.BanList:AddColumn( "Banned by" ):SetFixedWidth( 70)
 	
 	self.ButUnban = vgui.Create( "EvolveButton", pnl )
 	self.ButUnban:SetSize( 80, 22 )
-	self.ButUnban:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 53 )
+	self.ButUnban:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 58 )
 	self.ButUnban:SetButtonText( "Unban" )
 	self.ButUnban:SetNotHighlightedColor( 50 )
 	self.ButUnban:SetHighlightedColor( 90 )
@@ -35,7 +35,7 @@ function TAB:Initialize( pnl )
 	
 	self.ButTime = vgui.Create( "EvolveButton", pnl )
 	self.ButTime:SetSize( 60, 22 )
-	self.ButTime:SetPos( self.Width - 145, pnl:GetParent():GetTall() - 53 )
+	self.ButTime:SetPos( self.Width - 145, pnl:GetParent():GetTall() - 58 )
 	self.ButTime:SetButtonText( "Time..." )
 	self.ButTime.DoClick = function()
 		if ( #self.BanList:GetLines() > 0 ) then

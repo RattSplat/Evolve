@@ -5,7 +5,7 @@
 local PLUGIN = {}
 PLUGIN.Title = "Change Map"
 PLUGIN.Description = "Change the map."
-PLUGIN.Author = "Overv"
+PLUGIN.Author = "Overv, General Wrex updated for gmod 13"
 PLUGIN.ChatCommand = "map"
 PLUGIN.Usage = "<map> [gamemode]"
 PLUGIN.Privileges = { "Map changing" }
@@ -19,7 +19,11 @@ function PLUGIN:Call( ply, args )
 				evolve:Notify( evolve.colors.blue, ply:Nick(), evolve.colors.white, " has changed the map to ", evolve.colors.red, args[1], evolve.colors.white, "." )
 			end
 
-			timer.Simple( 0.5, function() RunConsoleCommand( "changegamemode", args[1], args[2] or GAMEMODE.FolderName ) end )
+			timer.Simple( 0.5, function() 
+			RunConsoleCommand( "gamemode", args[2] or GAMEMODE.FolderName)
+			RunConsoleCommand( "changelevel", args[1] ) 
+			
+			end )
 		else
 			evolve:Notify( ply, evolve.colors.red, "Specified map or gamemode not found!" )
 		end

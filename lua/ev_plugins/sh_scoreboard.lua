@@ -82,22 +82,23 @@ function PLUGIN:DrawInfoBar()
 	surface.DrawOutlinedRect( self.X + 15, self.Y + 110, self.Width - 30, 28 )
 
 	// Content
+	local yoffset = 135
 	local x = self.X + 24
-	draw.SimpleText( "Currently playing ", "Default", x, self.Y + 117, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-	x = x + self:QuickTextSize( "Default", "Currently playing " )
-	draw.SimpleText( GAMEMODE.Name, "DefaultBold", x, self.Y + 117, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-	x = x + self:QuickTextSize( "DefaultBold", GAMEMODE.Name )
-	draw.SimpleText( " on the map ", "Default", x, self.Y + 117, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-	x = x + self:QuickTextSize( "Default", " on the map " )
-	draw.SimpleText( game.GetMap(), "DefaultBold", x, self.Y + 117, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-	x = x + self:QuickTextSize( "DefaultBold", game.GetMap() )
-	draw.SimpleText( ", with ", "Default", x, self.Y + 117, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-	x = x + self:QuickTextSize( "Default", ", with " )
-	draw.SimpleText( #player.GetAll(), "DefaultBold", x, self.Y + 117, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-	x = x + self:QuickTextSize( "DefaultBold", #player.GetAll() )
+	draw.SimpleText( "Currently playing ", "ScoreboardText", x, self.Y + yoffset, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	x = x + self:QuickTextSize( "ScoreboardText", "Currently playing " )
+	draw.SimpleText( GAMEMODE.Name, "HUDNumber5", x, self.Y + yoffset, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	x = x + self:QuickTextSize( "ScoreboardText", GAMEMODE.Name )
+	draw.SimpleText( " on the map ", "ScoreboardText", x, self.Y + yoffset, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	x = x + self:QuickTextSize( "ScoreboardText", " on the map " )
+	draw.SimpleText( game.GetMap(), "ScoreboardText", x, self.Y + yoffset, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	x = x + self:QuickTextSize( "ScoreboardText", game.GetMap() )
+	draw.SimpleText( ", with ", "ScoreboardText", x, self.Y + yoffset, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	x = x + self:QuickTextSize( "ScoreboardText", ", with " )
+	draw.SimpleText( #player.GetAll(), "ScoreboardText", x, self.Y + yoffset, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	x = x + self:QuickTextSize( "ScoreboardText", #player.GetAll() )
 	local s = ""
 	if ( #player.GetAll() > 1 ) then s = "s" end
-	draw.SimpleText( " player" .. s .. ".", "Default", x, self.Y + 117, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	draw.SimpleText( " player" .. s .. ".", "Default", x, self.Y + yoffset, Color( 0, 0, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 end
 
 function PLUGIN:DrawUsergroup( playerinfo, usergroup, title, icon, y )
@@ -115,7 +116,7 @@ function PLUGIN:DrawUsergroup( playerinfo, usergroup, title, icon, y )
 	surface.SetTexture( icon )
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	surface.DrawTexturedRect( self.X + 15, y + 4, 14, 14 )
-	draw.SimpleText( title, "DefaultBold", self.X + 40, y + 4, Color( 39, 39, 39, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+	draw.SimpleText( title, "ScoreboardText", self.X + 40, y + 4, Color( 39, 39, 39, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 
 	self:DrawTexturedRect( self.TexPing, self.X + self.Width - 50, y + 4, 14, 14 )
 	self:DrawTexturedRect( self.TexDeaths, self.X + self.Width - 150.5, y + 4, 14, 14 )

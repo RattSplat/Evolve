@@ -26,4 +26,4 @@ Hoever, the GitHub at https://github.com/maddog986/Evolve will continue Evolve a
 People are welcome to submit bug fixes, contribute, and create addons through branches.
 
 Code Contributors:
-	MadDog
+	MadDog,  [.:WeB:.] General Wrex
