@@ -3,7 +3,7 @@ local TAB = {}
 TAB.Title = "Maps"
 TAB.Description = "Used to change maps."
 TAB.Icon = "icon16/picture_edit.png"
-TAB.Author = "MDave" --Edited by MadDog
+TAB.Author = "MDave" --Edited by MadDog and GeneralWrex
 TAB.Width = 500
 TAB.Privileges = { "Maps Menu" }
 TAB.ToUpdate = nil
@@ -38,10 +38,12 @@ end
 
 function TAB:SetCurrentMapicon( map )
 	if ( map == nil )then
-		map = game.GetMap()
+		map = game.GetMap()	
 	end
-
-	self.MapIcon:SetImage( "maps/noIcon.vmt" ) --TODO: Fix later when this function doesnt fail (in beta update17) ~MadDog
+	
+	
+	self.MapIcon:SetImage("maps/"..map..".png") --TODO: Fix later when this function doesnt fail (in beta update17) ~MadDog
+	print(map)
 	self.MapIcon:SizeToContents()
 	self.MapIcon.mappath = map
 
@@ -90,7 +92,7 @@ function TAB:Initialize( pnl )
 
 	self.IconPanel = vgui.Create( "DPanel" , pnl )
 		self.IconPanel:SetPos( 2 , 2 )
-		self.IconPanel:SetSize( self.Width -4 , pnl:GetParent():GetTall()*.3 -10 )
+		self.IconPanel:SetSize( self.Width -10 , pnl:GetParent():GetTall()*.23 -20 )
 		self.IconPanel.m_bgColor = Color(80 , 80 , 80 , 255)
 
 	self.MapIconBckg = vgui.Create( "DPanel" , self.IconPanel )
@@ -114,7 +116,7 @@ function TAB:Initialize( pnl )
 
 	self.Maps = vgui.Create( "DPanelList", pnl )
 	self.Maps:SetPos(2, pnl:GetParent():GetTall()*.3 )
-	self.Maps:SetSize( self.Width -4 , pnl:GetParent():GetTall()*.7 - 10 )
+	self.Maps:SetSize( self.Width -10 , pnl:GetParent():GetTall()*.7 - 10 )
 
 	self.Maps:EnableVerticalScrollbar(true)
 	self.Maps:EnableHorizontal(false)
@@ -129,6 +131,7 @@ function TAB:Initialize( pnl )
 			{ name = "hidden" , patterns = { "background", "^test_", "^styleguide", "^devtest" , "intro" } },
 			{ name = "Garrysmod" , patterns = {"^gm_"} },
 			{ name = "Portal" , patterns = {"^escape_" , "^testchmb_"} },
+			{ name = "Portal 2" , patterns = {"^mp_coop_" , "^sp_"} },
 			{ name = "Half life 2" , patterns = {"^d1_","^d2_","^d3_"} },
 			{ name = "Half life 2 Epsiode 1" , patterns = {"^ep1_"} },
 			{ name = "Half life 2 Epsiode 2" , patterns = {"^ep2_"} },

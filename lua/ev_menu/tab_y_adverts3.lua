@@ -10,7 +10,7 @@ local TAB = {}
 TAB.Title = "Adverts"
 TAB.Description = "Add, remove, modify adverts."
 TAB.Icon = "icon16/page_white_wrench.png"
-TAB.Author = "SariaFace"
+TAB.Author = "SariaFace" --edited by General Wrex
 TAB.Width = 520
 TAB.Privileges = { "Advert 3 Menu" }
 
@@ -148,43 +148,53 @@ function TAB:Initialize( pnl )
 	self.AdList = vgui.Create( "DListView", pnl )
 	self.AdList:SetSize( self.Width, pnl:GetParent():GetTall() - 58 )
 	self.AdList:SetMultiSelect( false )
-	self.AdList:AddColumn( "ID" ):SetFixedWidth( 70 )
-	self.AdList:AddColumn( "Colour" ):SetFixedWidth( 70 )
+	self.AdList:AddColumn( "ID" ):SetFixedWidth( 64 )
+	self.AdList:AddColumn( "Color" ):SetFixedWidth( 70 )
 	self.AdList:AddColumn( "Time(s)" ):SetFixedWidth( 40 )
 	self.AdList:AddColumn( "Message" ):SetFixedWidth( 308 )
 	self.AdList:AddColumn( "Active" ):SetFixedWidth( 32 )
 
-	self.New = vgui.Create( "DButton", pnl )
+	self.New = vgui.Create( "EvolveButton", pnl )
 	self.New:SetSize( 60, 22 )
-	self.New:SetPos( self.Width - 275, pnl:GetParent():GetTall() - 53 )
-	self.New:SetText( "ReSync" )
+	self.New:SetPos( self.Width - 275, pnl:GetParent():GetTall() - 58 )
+	self.New:SetButtonText( "ReSync" )
+	self.New:SetNotHighlightedColor( 50 )
+	self.New:SetHighlightedColor( 90 )
 	self.New.DoClick = function()
 		self:Request()
 	end
 
-	self.New = vgui.Create( "DButton", pnl )
+	self.New = vgui.Create( "EvolveButton", pnl )
 	self.New:SetSize( 60, 22 )
-	self.New:SetPos( self.Width - 210, pnl:GetParent():GetTall() - 53 )
-	self.New:SetText( "New" )
+	self.New:SetPos( self.Width - 210, pnl:GetParent():GetTall() - 58 )
+	self.New:SetButtonText( "New" )
+	self.New:SetNotHighlightedColor( 50 )
+	self.New:SetHighlightedColor( 90 )
 	self.New.DoClick = function()
 		local newAdInput = vgui.Create("NewAdPanel")
 	end
 
-	self.Tog = vgui.Create( "DButton", pnl )
+	self.Tog = vgui.Create( "EvolveButton", pnl )
 	self.Tog:SetSize( 60, 22 )
-	self.Tog:SetPos( self.Width - 145, pnl:GetParent():GetTall() - 53 )
-	self.Tog:SetText( "Toggle" )
+	self.Tog:SetPos( self.Width - 145, pnl:GetParent():GetTall() - 58 )
+	self.Tog:SetButtonText( "Toggle" )
+	self.Tog:SetNotHighlightedColor( 50 )
+	self.Tog:SetHighlightedColor( 90 )
 	self.Tog.DoClick = function()
+		if id != self.AdList:GetSelected()[1]:GetValue(1) then id = 0 end
 		local id = self.AdList:GetSelected()[1]:GetValue(1)
+		
 		RunConsoleCommand("ev", "advert3", "toggle", id)
 		adverts[id]["OnState"] = !adverts[id]["OnState"]
 		self.AdList:GetSelected()[1]:SetValue(5, adverts[id]["OnState"])
 	end
 
-	self.Rem = vgui.Create( "DButton", pnl )
+	self.Rem = vgui.Create( "EvolveButton", pnl )
 	self.Rem:SetSize( 60, 22 )
-	self.Rem:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 53 )
-	self.Rem:SetText( "Remove" )
+	self.Rem:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 58 )
+	self.Rem:SetButtonText( "Remove" )
+	self.Rem:SetNotHighlightedColor( 50 )
+	self.Rem:SetHighlightedColor( 90 )
 	self.Rem.DoClick = function()
 		local id = self.AdList:GetSelected()[1]:GetValue(1)
 		RunConsoleCommand("ev", "advert3", "remove", id)

@@ -5,38 +5,46 @@
 local TAB = {}
 TAB.Title = "Ranks"
 TAB.Description = "Manage ranks."
-TAB.Icon = "icon16/group"
-TAB.Author = "Overv"
+TAB.Icon = "icon16/user.png"
+TAB.Author = "Overv, MadDog, General Wrex "
 TAB.Width = 260
 TAB.Privileges = { "Rank menu" }
 
 // This determines if the second privilege list column toggles all privileges on or off
 TAB.AllToggle = true
 
+
+
 function TAB:Initialize( pnl )
 	// Create the rank list
-	self.RankList = vgui.Create( "DListBox", pnl )
+	self.RankList = vgui.Create( "DListView", pnl )
 	self.RankList:SetPos( 0, 0 )
-	self.RankList:SetSize( self.Width, 125 )
-	self.RankList:SetMultiple( false )
+	self.RankList:SetSize( self.Width-10, 125 )
+	self.RankList.OnRowSelected = function() //added to update the last rank selected, without this, error party!
+	
+	CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+	
+	end
 	self.RankList.Think = function()
-		if ( self.LastRank != self.RankList:GetSelectedItems()[1].Rank ) then self.LastRank = self.RankList:GetSelectedItems()[1].Rank else return end
-
+	
+		if ( self.LastRank != CurrentRank) then  self.LastRank = CurrentRank else return end
+	
 		self.AllToggle = true
 
 		self.Immunity:SetVisible( self.LastRank != "owner" )
 		self.Usergroup:SetVisible( self.LastRank != "owner" )
 		self.PrivList:SetVisible( self.LastRank != "owner" )
 		self.RemoveButton:SetVisible( self.LastRank != "owner" )
+		self.PrivFilter:SetVisible( self.LastRank != "owner" )
 
 		if ( self.LastRank == "owner" ) then
-			self.PropertyContainer:SetSize( self.Width, pnl:GetParent():GetTall() - 188 )
-			self.ColorPicker:SetSize( self.Width + 37, self.PropertyContainer:GetTall() - 10 )
-			self.RenameButton:SetPos( self.Width - 60, pnl:GetParent():GetTall() - 53 )
+			self.PropertyContainer:SetSize( self.Width, pnl:GetParent():GetTall() - 208 )
+			self.ColorPicker:SetSize( self.Width - 40, self.PropertyContainer:GetTall() - 50 )
+			self.RenameButton:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 58 )
 		else
 			self.PropertyContainer:SetSize( self.Width, 74 )
 			self.ColorPicker:SetSize( 76, 64 )
-			self.RenameButton:SetPos( self.Width - 125, pnl:GetParent():GetTall() - 53 )
+			self.RenameButton:SetPos( self.Width - 145, pnl:GetParent():GetTall() - 59 )
 		end
 
 		self.ColorPicker:SetColor( evolve.ranks[ self.LastRank ].Color or color_white )
@@ -48,16 +56,25 @@ function TAB:Initialize( pnl )
 	// Create the privilege filter
 	self.PrivFilter = vgui.Create( "DComboBox", pnl )
 	self.PrivFilter:SetPos( 0, self.RankList:GetTall() + 84 )
-	self.PrivFilter:SetSize( self.Width, 20 )
+	self.PrivFilter:SetSize( self.Width-20, 20 )
 	--self.PrivFilter:SetEditable( false )
 	self.PrivFilter:AddChoice( "Privileges" )
+	self.PrivFilter.OnChange = function()
+	
+	CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+	
+	end
 	self.PrivFilter:AddChoice( "Weapons" )
 	self.PrivFilter:AddChoice( "Entities" )
 	self.PrivFilter:AddChoice( "Tools" )
 	self.PrivFilter:ChooseOptionID( 1 )
 	self.PrivFilter.OnSelect = function( id, value, data )
 		self.AllToggle = true
-
+	
+	
+	  CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+	
+	
 		self.PrivFilter.Selected = data
 		self:UpdatePrivileges()
 	end
@@ -65,7 +82,7 @@ function TAB:Initialize( pnl )
 	// Create the privilege list
 	self.PrivList = vgui.Create( "DListView", pnl )
 	self.PrivList:SetPos( 0, self.RankList:GetTall() + 84 + 20 + 5 )
-	self.PrivList:SetSize( self.Width, pnl:GetParent():GetTall() - 267 - 20 - 5 )
+	self.PrivList:SetSize( self.Width-10, pnl:GetParent():GetTall() - 267 - 20 - 5 )
 	local col = self.PrivList:AddColumn( "Privilege" )
 	col:SetFixedWidth( self.Width * 0.8 )
 
@@ -78,7 +95,7 @@ function TAB:Initialize( pnl )
 		elseif ( self.PrivFilter.Selected == "Tools" ) then filter = "#"
 		end
 
-		RunConsoleCommand( "ev_setrank", self.RankList:GetSelectedItems()[1].Rank, self.AllToggle and 1 or 0, filter )
+		RunConsoleCommand( "ev_setrank", CurrentRank, self.AllToggle and 1 or 0, filter )
 		self.AllToggle = !self.AllToggle
 	end
 
@@ -88,32 +105,42 @@ function TAB:Initialize( pnl )
 
 	// Rank color
 	self.ColorPicker = vgui.Create( "DColorMixer", self.PropertyContainer )
-	self.ColorPicker:SetPos( 5, 5 )
-	self.ColorPicker:SetSize( 76, 64 )
+	self.ColorPicker:SetPos( 2, 10 )
+	self.ColorPicker:SetSize( 25, 50 )
 	self.ColorPicker.HSV.OldRelease = self.ColorPicker.HSV.OnMouseReleased
 	self.ColorPicker.HSV.OnMouseReleased = function( mcode )
+	CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
 		self.ColorPicker.HSV.OldRelease( mcode )
 		local color = self.ColorPicker:GetColor()
-		RunConsoleCommand( "ev_setrankp", self.RankList:GetSelectedItems()[1].Rank, self.Immunity:GetValue(), self.Usergroup.Selected, color.r, color.g, color.b )
+		RunConsoleCommand( "ev_setrankp", CurrentRank, self.Immunity:GetValue(), self.Usergroup.Selected, color.r, color.g, color.b )
 	end
 	self.ColorPicker:SetColor( color_white )
 
 	// Immunity
 	self.Immunity = vgui.Create( "DNumSlider", self.PropertyContainer )
-	self.Immunity:SetPos( 74, 5 )
-	self.Immunity:SetWide( self.Width - 79 )
+    self.Immunity:SetPos( 84, 5 )
+	self.Immunity:SetWide( self.Width - 92 )
 	self.Immunity:SetDecimals( 0 )
 	self.Immunity:SetMin( 0 )
 	self.Immunity:SetMax( 99 )
 	self.Immunity:SetText( "Immunity" )
 	self.Immunity.Think = function()
+			
+		
 		if ( input.IsMouseDown( MOUSE_LEFT ) ) then
+		CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
 			self.applySettings = true
+			
+			
 		elseif ( !input.IsMouseDown( MOUSE_LEFT ) and self.applySettings ) then
-			local rank = self.RankList:GetSelectedItems()[1].Rank
-			if ( evolve.ranks[ rank ].Immunity != self.Immunity:GetValue() ) then
+		
+			CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+
+			
+			if ( evolve.ranks[ CurrentRank ].Immunity != self.Immunity:GetValue() ) then
+			CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
 				local color = self.ColorPicker:GetColor()
-				RunConsoleCommand( "ev_setrankp", self.RankList:GetSelectedItems()[1].Rank, self.Immunity:GetValue(), self.Usergroup.Selected, color.r, color.g, color.b )
+				RunConsoleCommand( "ev_setrankp", CurrentRank, self.Immunity:GetValue(), self.Usergroup.Selected, color.r, color.g, color.b )
 			end
 			self.applySettings = false
 		end
@@ -121,9 +148,9 @@ function TAB:Initialize( pnl )
 
 	// User group
 	self.Usergroup = vgui.Create( "DComboBox", self.PropertyContainer )
-	self.Usergroup:SetPos( 74, 49 )
-	self.Usergroup:SetSize( self.Width - 79, 20 )
-	self.Usergroup:SetEditable( false )
+	self.Usergroup:SetPos( 80, 49 )
+	self.Usergroup:SetSize( self.Width - 89, 20 )
+	--self.Usergroup:SetEditable( false )
 	self.Usergroup:AddChoice( "guest" )
 	self.Usergroup:AddChoice( "admin" )
 	self.Usergroup:AddChoice( "superadmin" )
@@ -131,12 +158,12 @@ function TAB:Initialize( pnl )
 	self.Usergroup.OnSelect = function( id, value, data )
 		self.Usergroup.Selected = data
 		local color = self.ColorPicker:GetColor()
-		RunConsoleCommand( "ev_setrankp", self.RankList:GetSelectedItems()[1].Rank, self.Immunity:GetValue(), data, color.r, color.g, color.b )
+		RunConsoleCommand( "ev_setrankp", CurrentRank, self.Immunity:GetValue(), data, color.r, color.g, color.b )
 	end
 
 	// New button
 	self.NewButton = vgui.Create( "EvolveButton", pnl )
-	self.NewButton:SetPos( 0, pnl:GetParent():GetTall() - 53 )
+	self.NewButton:SetPos( 5, pnl:GetParent():GetTall() - 58 )
 	self.NewButton:SetSize( 60, 22 )
 	self.NewButton:SetButtonText( "New" )
 	self.NewButton:SetNotHighlightedColor( 50 )
@@ -147,7 +174,7 @@ function TAB:Initialize( pnl )
 				if ( string.find( id, " " ) or string.lower( id ) != id or evolve.ranks[ id ] ) then
 					chat.AddText( evolve.colors.red, "You specified an invalid identifier. Make sure it doesn't exist yet and does not contain spaces or capitalized characters." )
 				else
-					local curRank = self.RankList:GetSelectedItems()[1].Rank
+					local curRank = CurrentRank
 					Derma_Query( "Do you want to derive the settings and privileges of the currently selected rank, " .. evolve.ranks[ curRank ].Title .. "?", "Rank inheritance",
 
 						"Yes",
@@ -167,11 +194,11 @@ function TAB:Initialize( pnl )
 
 	// Remove button
 	self.RemoveButton = vgui.Create( "EvolveButton", pnl )
-	self.RemoveButton:SetPos( self.Width - 60, pnl:GetParent():GetTall() - 53 )
+	self.RemoveButton:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 58 )
 	self.RemoveButton:SetSize( 60, 22 )
 	self.RemoveButton:SetButtonText( "Remove" )
 	self.RemoveButton.DoClick = function()
-		local id = self.RankList:GetSelectedItems()[1].Rank
+		local id = CurrentRank
 		local rank = evolve.ranks[ id ].Title
 
 		if ( id == "guest" ) then
@@ -183,13 +210,14 @@ function TAB:Initialize( pnl )
 
 	// Rename button
 	self.RenameButton = vgui.Create( "EvolveButton", pnl )
-	self.RenameButton:SetPos( self.Width - 125, pnl:GetParent():GetTall() - 53 )
+	self.RenameButton:SetPos( self.Width - 205, pnl:GetParent():GetTall() - 58 )
 	self.RenameButton:SetSize( 60, 22 )
 	self.RenameButton:SetButtonText( "Rename" )
 	self.RenameButton.DoClick = function()
-			local rank = self.RankList:GetSelectedItems()[1].Rank
-			Derma_StringRequest( "Rename rank " .. evolve.ranks[ rank ].Title, "Enter a new name:", evolve.ranks[ rank ].Title, function( name )
-				RunConsoleCommand( "ev_renamerank", rank, name )
+	
+		
+			Derma_StringRequest( "Rename rank " .. evolve.ranks[ CurrentRank ].Title, "Enter a new name:", evolve.ranks[ CurrentRank ].Title, function( name )
+				RunConsoleCommand( "ev_renamerank", CurrentRank, name )
 			end )
 	end
 
@@ -267,9 +295,16 @@ function TAB:UpdatePrivileges()
 			line.State:SetImage( "icon16/accept.png" )
 			line.State:SetSize( 16, 16 )
 			line.State:SetPos( self.Width * 0.875 - 12, 1 )
-
+			line.OnRowSelected = function() //added to update the last rank selected, without this, error party! -wrex
+	
+			CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+	
+			end
 			line.Think = function()
-				if ( line.LastRank != self.RankList:GetSelectedItems()[1].Rank ) then line.LastRank = self.RankList:GetSelectedItems()[1].Rank else return end
+				
+				
+
+				if ( line.LastRank != CurrentRank ) then line.LastRank = CurrentRank else return end
 
 				line.State:SetVisible( line.LastRank == "owner" or table.HasValue( evolve.ranks[ line.LastRank ].Privileges, privilege ) )
 			end
@@ -278,6 +313,8 @@ function TAB:UpdatePrivileges()
 			line.LastPress = os.clock()
 
 			line.OnMousePressed = function()
+				CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+			
 				if ( line.LastPress + 0.3 > os.clock() and LocalPlayer():EV_HasPrivilege( "Rank modification" ) ) then
 					if ( line.State:IsVisible() ) then
 						RunConsoleCommand( "ev_setrank", line.LastRank, privilege, 0 )
@@ -299,47 +336,52 @@ end
 
 function TAB:Update()
 	// Sort ranks by immunity
+	
 	local ranks = {}
 	for id, rank in pairs( evolve.ranks ) do
 		table.insert( ranks, { ID = id, Icon = rank.Icon, Title = rank.Title, Immunity = rank.Immunity } )
 	end
 	table.SortByMember( ranks, "Immunity" )
-
-	if ( #self.RankList:GetItems() == 0 ) then
+	
+	
+	
+	
+	if ( #self.RankList:GetSelected() == 0 ) then
 		self.RankList:Clear()
 		for _, rank in ipairs( ranks ) do
-			local item = self.RankList:AddItem( "" )
+			local item = self.RankList:AddLine( rank )
 			item:SetTall( 20 )
 			item.Rank = rank.ID
+			
 
 			item.Icon = vgui.Create( "DImage", item )
-			item.Icon:SetImage( "icon16/" .. rank.Icon )
+			item.Icon:SetImage( "icon16/" .. rank.Icon ..".png" )
 			item.Icon:SetPos( 4, 4 )
 			item.Icon:SetSize( 14, 14 )
 			item.PaintOver = function()
-				draw.SimpleText( rank.Title, "Default", 28, 5, Color( 0, 0, 0, 255 ) )
+				draw.SimpleText( rank.Title, "Default", 28, 3, Color( 0, 0, 0, 255 ) )
 			end
 		end
-		self.RankList:SelectItem( self.RankList:GetItems()[#self.RankList:GetItems()], true )
+		self.RankList:SelectFirstItem()
 	end
-
+	
 	self:UpdatePrivileges()
 end
 
 function TAB:EV_RankRemoved( rank )
-	for _, rankitem in pairs( self.RankList:GetItems() ) do
+	for _, rankitem in pairs( self.RankList:GetSelected() ) do
 		if ( rankitem.Rank == rank ) then
-			self.RankList:RemoveItem( rankitem )
+			self.RankList:RemoveLine( rankitem )
 			break
 		end
 	end
 
-	self.RankList:SelectItem( self.RankList:GetItems()[1], true )
+	self.RankList:SelectFirstItem()
 	self.LastRank = "owner"
 end
 
 function TAB:EV_RankRenamed( rank, title )
-	for _, rankitem in pairs( self.RankList:GetItems() ) do
+	for _, rankitem in pairs( self.RankList:GetSelected() ) do
 		if ( rankitem.Rank == rank ) then
 			rankitem.PaintOver = function()
 				draw.SimpleText( title, "Default", 28, 5, Color( 0, 0, 0, 255 ) )
@@ -350,8 +392,10 @@ function TAB:EV_RankRenamed( rank, title )
 	end
 end
 
+		
+
 function TAB:EV_RankPrivilegeChange( rank, privilege, enabled )
-	if ( rank == self.RankList:GetSelectedItems()[1].Rank ) then
+	if ( rank == CurrentRank ) then
 		for _, line in pairs( self.PrivList:GetLines() ) do
 			if ( line.Privilege == privilege ) then
 				line.State:SetVisible( enabled )
@@ -363,22 +407,24 @@ end
 
 function TAB:EV_RankCreated( id )
 	local rank = evolve.ranks[ id ]
-	local item = self.RankList:AddItem( "" )
+	local item = self.RankList:AddLine( "" )
 
 	item:SetTall( 20 )
 	item.Rank = id
+	
+	
 
 	item.Icon = vgui.Create( "DImage", item )
-	item.Icon:SetImage( "icon16/" .. rank.Icon )
+	item.Icon:SetImage( "icon16/" .. rank.Icon ..".png" )
 	item.Icon:SetPos( 4, 4 )
 	item.Icon:SetSize( 14, 14 )
 	item.PaintOver = function()
-		draw.SimpleText( rank.Title, "Default", 28, 5, Color( 0, 0, 0, 255 ) )
+		draw.SimpleText( rank.Title, "Default", 28, 3, Color( 0, 0, 0, 255 ) )
 	end
 end
 
 function TAB:EV_RankUpdated( id )
-	if ( id == self.RankList:GetSelectedItems()[1].Rank ) then
+	if ( id == CurrentRank ) then
 		self.ColorPicker:SetColor( evolve.ranks[ id ].Color or color_white )
 		self.Immunity:SetValue( evolve.ranks[ id ].Immunity or 0 )
 		self.Usergroup:SetText( evolve.ranks[ id ].UserGroup or "unknown" )
