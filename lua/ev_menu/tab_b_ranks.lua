@@ -194,6 +194,7 @@ function TAB:Initialize( pnl )
 	end
 
 	// Rename button
+	--[[
 	self.RenameButton = vgui.Create( "EvolveButton", pnl )
 	self.RenameButton:SetPos( self.Width - 205, pnl:GetParent():GetTall() - 58 )
 	self.RenameButton:SetSize( 60, 22 )
@@ -202,6 +203,14 @@ function TAB:Initialize( pnl )
 		Derma_StringRequest( "Rename rank " .. evolve.ranks[ CurrentRank ].Title, "Enter a new name:", evolve.ranks[ CurrentRank ].Title, function( name )
 			RunConsoleCommand( "ev_renamerank", CurrentRank, name )
 		end )
+	end]]
+
+	self.RenameButton = vgui.Create( "EvolveButton", pnl )
+	self.RenameButton:SetPos( self.Width - 205, pnl:GetParent():GetTall() - 58 )
+	self.RenameButton:SetSize( 60, 22 )
+	self.RenameButton:SetButtonText( "Remove" )
+	self.RenameButton.DoClick = function()
+
 	end
 
 	self.ColorPicker:SetColor( evolve.ranks.guest.Color or color_white )
