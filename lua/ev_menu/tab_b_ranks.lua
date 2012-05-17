@@ -13,20 +13,19 @@ TAB.Privileges = { "Rank menu" }
 // This determines if the second privilege list column toggles all privileges on or off
 TAB.AllToggle = true
 
-
-
 function TAB:Initialize( pnl )
 	// Create the rank list
 	self.RankList = vgui.Create( "DListView", pnl )
 	self.RankList:SetPos( 0, 0 )
 	self.RankList:SetSize( self.Width-10, 125 )
-	self.RankList.OnRowSelected = function() //added to update the last rank selected, without this, error party!
-	
-	CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
-	
+	self.RankList.GetCurrentRank = function( self )
+		CurrentRank = self:GetLines()[self:GetSelectedLine()].Rank
+		return CurrentRank
+	end
+	self.RankList.OnRowSelected = function( self ) //added to update the last rank selected, without this, error party!
+		CurrentRank = self:GetCurrentRank()
 	end
 	self.RankList.Think = function()
-	
 		if ( self.LastRank != CurrentRank) then  self.LastRank = CurrentRank else return end
 	
 		self.AllToggle = true
@@ -60,9 +59,7 @@ function TAB:Initialize( pnl )
 	--self.PrivFilter:SetEditable( false )
 	self.PrivFilter:AddChoice( "Privileges" )
 	self.PrivFilter.OnChange = function()
-	
-	CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
-	
+		CurrentRank = self.RankList:GetCurrentRank()
 	end
 	self.PrivFilter:AddChoice( "Weapons" )
 	self.PrivFilter:AddChoice( "Entities" )
@@ -71,10 +68,8 @@ function TAB:Initialize( pnl )
 	self.PrivFilter.OnSelect = function( id, value, data )
 		self.AllToggle = true
 	
-	
-	  CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
-	
-	
+		CurrentRank = self.RankList:GetCurrentRank()
+		
 		self.PrivFilter.Selected = data
 		self:UpdatePrivileges()
 	end
@@ -109,7 +104,7 @@ function TAB:Initialize( pnl )
 	self.ColorPicker:SetSize( 25, 50 )
 	self.ColorPicker.HSV.OldRelease = self.ColorPicker.HSV.OnMouseReleased
 	self.ColorPicker.HSV.OnMouseReleased = function( mcode )
-	CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+		CurrentRank = self.RankList:GetCurrentRank()
 		self.ColorPicker.HSV.OldRelease( mcode )
 		local color = self.ColorPicker:GetColor()
 		RunConsoleCommand( "ev_setrankp", CurrentRank, self.Immunity:GetValue(), self.Usergroup.Selected, color.r, color.g, color.b )
@@ -118,27 +113,19 @@ function TAB:Initialize( pnl )
 
 	// Immunity
 	self.Immunity = vgui.Create( "DNumSlider", self.PropertyContainer )
-    self.Immunity:SetPos( 84, 5 )
+	self.Immunity:SetPos( 84, 5 )
 	self.Immunity:SetWide( self.Width - 92 )
 	self.Immunity:SetDecimals( 0 )
 	self.Immunity:SetMin( 0 )
 	self.Immunity:SetMax( 99 )
 	self.Immunity:SetText( "Immunity" )
 	self.Immunity.Think = function()
-			
-		
-		if ( input.IsMouseDown( MOUSE_LEFT ) ) then
-		CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
-			self.applySettings = true
-			
-			
-		elseif ( !input.IsMouseDown( MOUSE_LEFT ) and self.applySettings ) then
-		
-			CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
+		CurrentRank = self.RankList:GetCurrentRank()
 
-			
+		if ( input.IsMouseDown( MOUSE_LEFT ) ) then
+			self.applySettings = true
+		elseif ( !input.IsMouseDown( MOUSE_LEFT ) and self.applySettings ) then
 			if ( evolve.ranks[ CurrentRank ].Immunity != self.Immunity:GetValue() ) then
-			CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
 				local color = self.ColorPicker:GetColor()
 				RunConsoleCommand( "ev_setrankp", CurrentRank, self.Immunity:GetValue(), self.Usergroup.Selected, color.r, color.g, color.b )
 			end
@@ -177,13 +164,11 @@ function TAB:Initialize( pnl )
 					local curRank = CurrentRank
 					Derma_Query( "Do you want to derive the settings and privileges of the currently selected rank, " .. evolve.ranks[ curRank ].Title .. "?", "Rank inheritance",
 
-						"Yes",
-						function()
+						"Yes", function()
 							RunConsoleCommand( "ev_createrank", id, title, curRank )
 						end,
 
-						"No",
-						function()
+						"No", function()
 							RunConsoleCommand( "ev_createrank", id, title )
 						end
 					)
@@ -214,11 +199,9 @@ function TAB:Initialize( pnl )
 	self.RenameButton:SetSize( 60, 22 )
 	self.RenameButton:SetButtonText( "Rename" )
 	self.RenameButton.DoClick = function()
-	
-		
-			Derma_StringRequest( "Rename rank " .. evolve.ranks[ CurrentRank ].Title, "Enter a new name:", evolve.ranks[ CurrentRank ].Title, function( name )
-				RunConsoleCommand( "ev_renamerank", CurrentRank, name )
-			end )
+		Derma_StringRequest( "Rename rank " .. evolve.ranks[ CurrentRank ].Title, "Enter a new name:", evolve.ranks[ CurrentRank ].Title, function( name )
+			RunConsoleCommand( "ev_renamerank", CurrentRank, name )
+		end )
 	end
 
 	self.ColorPicker:SetColor( evolve.ranks.guest.Color or color_white )
@@ -296,14 +279,9 @@ function TAB:UpdatePrivileges()
 			line.State:SetSize( 16, 16 )
 			line.State:SetPos( self.Width * 0.875 - 12, 1 )
 			line.OnRowSelected = function() //added to update the last rank selected, without this, error party! -wrex
-	
-			CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
-	
+				CurrentRank = self.RankList:GetCurrentRank()
 			end
 			line.Think = function()
-				
-				
-
 				if ( line.LastRank != CurrentRank ) then line.LastRank = CurrentRank else return end
 
 				line.State:SetVisible( line.LastRank == "owner" or table.HasValue( evolve.ranks[ line.LastRank ].Privileges, privilege ) )
@@ -313,8 +291,8 @@ function TAB:UpdatePrivileges()
 			line.LastPress = os.clock()
 
 			line.OnMousePressed = function()
-				CurrentRank = self.RankList:GetLines()[self.RankList:GetSelectedLine()].Rank 
-			
+				CurrentRank = self.RankList:GetCurrentRank()
+
 				if ( line.LastPress + 0.3 > os.clock() and LocalPlayer():EV_HasPrivilege( "Rank modification" ) ) then
 					if ( line.State:IsVisible() ) then
 						RunConsoleCommand( "ev_setrank", line.LastRank, privilege, 0 )
@@ -336,23 +314,18 @@ end
 
 function TAB:Update()
 	// Sort ranks by immunity
-	
 	local ranks = {}
 	for id, rank in pairs( evolve.ranks ) do
 		table.insert( ranks, { ID = id, Icon = rank.Icon, Title = rank.Title, Immunity = rank.Immunity } )
 	end
 	table.SortByMember( ranks, "Immunity" )
-	
-	
-	
-	
+
 	if ( #self.RankList:GetSelected() == 0 ) then
 		self.RankList:Clear()
 		for _, rank in ipairs( ranks ) do
 			local item = self.RankList:AddLine( rank )
 			item:SetTall( 20 )
 			item.Rank = rank.ID
-			
 
 			item.Icon = vgui.Create( "DImage", item )
 			item.Icon:SetImage( "icon16/" .. rank.Icon ..".png" )
@@ -411,8 +384,6 @@ function TAB:EV_RankCreated( id )
 
 	item:SetTall( 20 )
 	item.Rank = id
-	
-	
 
 	item.Icon = vgui.Create( "DImage", item )
 	item.Icon:SetImage( "icon16/" .. rank.Icon ..".png" )

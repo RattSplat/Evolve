@@ -5,7 +5,7 @@
 local PLUGIN = {}
 PLUGIN.Title = "Version"
 PLUGIN.Description = "Returns the version of Evolve."
-PLUGIN.Author = "Overv"
+PLUGIN.Author = "Overv,MadDog"
 PLUGIN.ChatCommand = { "version", "about" }
 
 function PLUGIN:Call( ply, args )
@@ -15,15 +15,16 @@ end
 function PLUGIN:PlayerInitialSpawn( ply )
 	if ( ply:EV_IsOwner() ) then
 		if ( !self.LatestVersion ) then
-			http.Get( "http://code.google.com/p/evolvemod/source/list", "", function( src )
-				self.LatestVersion = tonumber( src:match( "r([1-9]+)" ) )
+			--im using my personal website to pull the version number off the GitHub website. My site also trims the content down so the server doesnt have to download a huge file. ~MadDog
+			http.Get( "http://www.aspinvision.com/evolve.asp", "", function( src ) 
+				self.LatestVersion = tonumber( src ) --:match( "version = ([1-9]+)" ) )
 				self:PlayerInitialSpawn( ply )
 			end )
 			return
 		end
 		
 		if ( evolve.version < self.LatestVersion ) then
-			evolve:Notify( ply, evolve.colors.red, "WARNING: Your Evolve SVN needs to be updated to revision " .. self.LatestVersion .. "!" )
+			evolve:Notify( ply, evolve.colors.red, "WARNING: Your Evolve needs to be updated to " .. self.LatestVersion .. "!" )
 		end
 	end
 end
