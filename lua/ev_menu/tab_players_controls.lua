@@ -93,7 +93,7 @@ function PANEL:AddPlayer( ply )
 		--surface.SetDrawColor( 255, 255, 255, 255 )
 		--surface.DrawTexturedRect( item:GetWide() - 22, 0, 16, 16 )
 		
-		draw.SimpleText( ply:Nick() or "", "Default", 28, 3, Color( 0, 0, 0, 255 ) )
+		draw.SimpleText( ply:Nick() or "", "DermaDefault", 28, 3, Color( 0, 0, 0, 255 ) )
 	end
 	
 	item.OnMousePressedOld = item.OnMousePressed
