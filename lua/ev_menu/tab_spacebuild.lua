@@ -8,12 +8,12 @@ table.insert(convars.AllowedCommands, "SB_") --spacebuild commands
 table.insert(convars.AllowedCommands, "LS_") --life support commands
 
 local TAB = {}
-TAB.Title = "Spacebuild"
-TAB.Description = "Manage Spacebuild settings."
+TAB.Title = "Spacebuild2"
+TAB.Description = "Manage Spacebuild2 settings."
 TAB.Icon = "icon16/world.png"
 TAB.Author = "MadDog"
 TAB.Width = 520
-TAB.Privileges = { "Spacebuild menu" }
+TAB.Privileges = { "Spacebuild2 menu" }
 
 TAB.Limits = {
 	{ "sbox_maxreceptacles", "Receptacles" },
@@ -46,7 +46,7 @@ function TAB:ApplySettings()
 end
 
 function TAB:IsAllowed()
-	return LocalPlayer():EV_HasPrivilege( "Spacebuild menu" )
+	return LocalPlayer():EV_HasPrivilege( "Spacebuild2 menu" )
 end
 
 function TAB:Update()

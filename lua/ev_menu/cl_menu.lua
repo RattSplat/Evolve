@@ -2,6 +2,8 @@
 	Clientside menu framework
 -------------------------------------------------------------------------------------------------------------------------*/
 
+include( "tab_players_controls.lua" )
+
 evolve.MENU = {}
 local MENU = evolve.MENU
 MENU.Tabs = {}
@@ -19,7 +21,7 @@ function evolve:RegisterTab( tab )
 	tab:Initialize( tab.Panel )
 	tab:Update()
 
-	MENU.TabContainer:AddSheet( tab.Title, tab.Panel, tab.Icon, false, false, tab.Description )
+	--MENU.TabContainer:AddSheet( tab.Title, tab.Panel, tab.Icon, false, false, tab.Description )
 	table.insert( MENU.Tabs, tab )
 end
 
@@ -102,6 +104,12 @@ end )
 function MENU:Show()
 	if ( !LocalPlayer():EV_HasPrivilege( "Menu" ) ) then return end
 	if ( !self.Panel ) then MENU:Initialize() end
+
+	table.SortByMember( self.Tabs, "Sort", true )
+
+	for _, tab in ipairs( self.Tabs ) do
+		self.TabContainer:AddSheet( tab.Title, tab.Panel, tab.Icon, false, false, tab.Description )
+	end
 
 	for _, tab in ipairs( MENU.Tabs ) do
 		tab:Update()

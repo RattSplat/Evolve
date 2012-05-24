@@ -9,9 +9,8 @@ TAB.Icon = "icon16/user.png"
 TAB.Author = "Overv, MadDog, General Wrex "
 TAB.Width = 340
 TAB.Privileges = { "Rank menu" }
-
-// This determines if the second privilege list column toggles all privileges on or off
-TAB.AllToggle = true
+TAB.AllToggle = true // This determines if the second privilege list column toggles all privileges on or off
+TAB.Sort = 1
 
 function TAB:Initialize( pnl )
 	// Create the rank list
@@ -54,9 +53,6 @@ function TAB:Initialize( pnl )
 	self.PrivFilter:SetSize( self.Width-20, 20 )
 	--self.PrivFilter:SetEditable( false )
 	self.PrivFilter:AddChoice( "Privileges" )
-	self.PrivFilter.OnChange = function()
-		CurrentRank = self.RankList:GetCurrentRank()
-	end
 	self.PrivFilter:AddChoice( "Weapons" )
 	self.PrivFilter:AddChoice( "Entities" )
 	self.PrivFilter:AddChoice( "Tools" )
@@ -64,8 +60,6 @@ function TAB:Initialize( pnl )
 	self.PrivFilter.OnSelect = function( id, value, data )
 		self.AllToggle = true
 	
-		CurrentRank = self.RankList:GetCurrentRank()
-		
 		self.PrivFilter.Selected = data
 		self:UpdatePrivileges()
 	end
@@ -100,7 +94,6 @@ function TAB:Initialize( pnl )
 	self.ColorPicker:SetSize( 25, 50 )
 	self.ColorPicker.HSV.OldRelease = self.ColorPicker.HSV.OnMouseReleased
 	self.ColorPicker.HSV.OnMouseReleased = function( mcode )
-		CurrentRank = self.RankList:GetCurrentRank()
 		self.ColorPicker.HSV.OldRelease( mcode )
 		local color = self.ColorPicker:GetColor()
 		RunConsoleCommand( "ev_setrankp", self.RankList:GetSelected()[1].Rank, self.Immunity:GetValue(), self.Usergroup.Selected, color.r, color.g, color.b )

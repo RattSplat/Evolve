@@ -42,8 +42,7 @@ function TAB:SetCurrentMapicon( map )
 	end
 	
 	
-	self.MapIcon:SetImage("maps/"..map..".png") --TODO: Fix later when this function doesnt fail (in beta update17) ~MadDog
-	print(map)
+	self.MapIcon:SetImage("maps/"..map..".png")
 	self.MapIcon:SizeToContents()
 	self.MapIcon.mappath = map
 

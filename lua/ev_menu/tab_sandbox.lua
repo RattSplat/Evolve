@@ -9,6 +9,7 @@ TAB.Icon = "icon16/world.png"
 TAB.Author = "Overv"
 TAB.Width = 520
 TAB.Privileges = { "Sandbox menu" }
+TAB.Sort = 3
 
 TAB.Limits = {
 	{ "sbox_maxprops", "Props" },

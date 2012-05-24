@@ -2,8 +2,6 @@
 	Tab with player commands
 -------------------------------------------------------------------------------------------------------------------------*/
 
-include( "tab_players_controls.lua" )
-
 local TAB = {}
 TAB.Title = "Players"
 TAB.Description = "Manage players on the server."
@@ -11,6 +9,7 @@ TAB.Icon = "icon16/user.png"
 TAB.Author = "Overv, GeneralWrex"
 TAB.Privileges = { "Player menu" }
 TAB.Width = 260
+TAB.Sort = 2
 
 function TAB:Initialize( pnl )
 	// Create the player list
