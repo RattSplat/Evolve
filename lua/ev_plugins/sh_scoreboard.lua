@@ -17,6 +17,11 @@ resource.AddFile( "materials/gui/scoreboard_skull.vmt" )
 resource.AddFile( "materials/gui/scoreboard_playtime.vtf" )
 resource.AddFile( "materials/gui/scoreboard_playtime.vmt" )
 
+if SERVER then
+	CreateConVar("sbox_ev_scoreboard", 1, _, FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY)
+end
+
+
 local PLUGIN = {}
 PLUGIN.Title = "Scoreboard"
 PLUGIN.Description = "Default custom scoreboard."
@@ -42,7 +47,7 @@ if ( CLIENT ) then
 end
 
 function PLUGIN:ScoreboardShow()
-	if ( GAMEMODE.Name == "Sandbox" and evolve.installed ) then
+	if ( GAMEMODE.IsSandboxDerived and evolve.installed and GetConVar("sbox_ev_scoreboard"):GetBool() == true ) then
 		self.DrawScoreboard = true
 		return true
 	end

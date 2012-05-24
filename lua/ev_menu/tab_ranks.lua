@@ -7,7 +7,7 @@ TAB.Title = "Ranks"
 TAB.Description = "Manage ranks."
 TAB.Icon = "icon16/user.png"
 TAB.Author = "Overv, MadDog, General Wrex "
-TAB.Width = 260
+TAB.Width = 340
 TAB.Privileges = { "Rank menu" }
 
 // This determines if the second privilege list column toggles all privileges on or off
@@ -35,11 +35,11 @@ function TAB:Initialize( pnl )
 		if ( self.LastRank == "owner" ) then
 			self.PropertyContainer:SetSize( self.Width, pnl:GetParent():GetTall() - 208 )
 			self.ColorPicker:SetSize( self.Width - 40, self.PropertyContainer:GetTall() - 50 )
-			self.RenameButton:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 58 )
+			self.RenameButton:SetPos( self.Width - self.RenameButton:GetWide(), pnl:GetParent():GetTall() - 58 )
 		else
 			self.PropertyContainer:SetSize( self.Width, 74 )
 			self.ColorPicker:SetSize( 76, 64 )
-			self.RenameButton:SetPos( self.Width - 145, pnl:GetParent():GetTall() - 58 )
+			self.RenameButton:SetPos( self.Width - self.RenameButton:GetWide() - self.NewButton:GetWide() - 5, pnl:GetParent():GetTall() - 58 )
 		end
 
 		self.ColorPicker:SetColor( evolve.ranks[ self.LastRank ].Color or color_white )
@@ -78,7 +78,7 @@ function TAB:Initialize( pnl )
 	col:SetFixedWidth( self.Width * 0.8 )
 
 	// Make the privilege enabled column toggle all on/all off
-	local col = self.PrivList:AddLine( "" )
+	col = self.PrivList:AddColumn( "" )
 	col.DoClick = function()
 		local filter
 		if ( self.PrivFilter.Selected == "Weapons" ) then filter = "@"
@@ -145,7 +145,7 @@ function TAB:Initialize( pnl )
 
 	// New button
 	self.NewButton = vgui.Create( "EvolveButton", pnl )
-	self.NewButton:SetPos( 5, pnl:GetParent():GetTall() - 58 )
+	self.NewButton:SetPos( 0, pnl:GetParent():GetTall() - 58 )
 	self.NewButton:SetSize( 60, 22 )
 	self.NewButton:SetButtonText( "New" )
 	self.NewButton:SetNotHighlightedColor( 50 )
@@ -176,7 +176,7 @@ function TAB:Initialize( pnl )
 
 	// Remove button
 	self.RemoveButton = vgui.Create( "EvolveButton", pnl )
-	self.RemoveButton:SetPos( self.Width - 80, pnl:GetParent():GetTall() - 58 )
+	self.RemoveButton:SetPos( self.Width - 60, pnl:GetParent():GetTall() - 58 )
 	self.RemoveButton:SetSize( 60, 22 )
 	self.RemoveButton:SetButtonText( "Remove" )
 	self.RemoveButton.DoClick = function()
@@ -192,7 +192,7 @@ function TAB:Initialize( pnl )
 
 	// Rename button
 	self.RenameButton = vgui.Create( "EvolveButton", pnl )
-	self.RenameButton:SetPos( self.Width - 205, pnl:GetParent():GetTall() - 58 )
+	self.RenameButton:SetPos( self.Width - self.RemoveButton:GetWide() - 27, pnl:GetParent():GetTall() - 58 )
 	self.RenameButton:SetSize( 60, 22 )
 	self.RenameButton:SetButtonText( "Rename" )
 	self.RenameButton.DoClick = function()

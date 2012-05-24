@@ -40,7 +40,7 @@ function PLUGIN:GetArguments( msg )
 end
 
 function PLUGIN:PlayerSay( ply, msg )
-	if ( ( GAMEMODE.Name == "Sandbox" and string.Left( msg, 1 ) == "/" ) or string.Left( msg, 1 ) == "!" or string.Left( msg, 1 ) == "@" ) then
+	if ( ( GAMEMODE.IsSandboxDerived and string.Left( msg, 1 ) == "/" ) or string.Left( msg, 1 ) == "!" or string.Left( msg, 1 ) == "@" ) then
 		local command = self:GetCommand( msg )
 		local args = self:GetArguments( msg )
 		local closest = { dist = 99, plugin = "" }
