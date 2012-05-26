@@ -20,7 +20,8 @@ function PLUGIN:Call( ply, args )
 		end
 		if ( saveRequired ) then evolve:CommitProperties() end
 		
-		RunConsoleCommand( "changegamemode", game.GetMap(), GAMEMODE.FolderName )
+		RunConsoleCommand( "gamemode", GAMEMODE.FolderName )
+		RunConsoleCommand( "changelevel", tostring(game.GetMap()))
 	else
 		evolve:Notify( ply, evolve.colors.red, evolve.constants.notallowed )
 	end
