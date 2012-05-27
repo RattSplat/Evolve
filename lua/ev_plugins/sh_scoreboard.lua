@@ -18,7 +18,7 @@ resource.AddFile( "materials/gui/scoreboard_playtime.vtf" )
 resource.AddFile( "materials/gui/scoreboard_playtime.vmt" )
 
 if SERVER then
-	CreateConVar("sbox_ev_scoreboard", 1, _, FCVAR_REPLICATED )
+	CreateConVar("sbox_ev_scoreboard", 1, _, FCVAR_REPLICATED | FCVAR_ARCHIVE )
 end
 
 

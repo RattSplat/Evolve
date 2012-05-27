@@ -105,10 +105,14 @@ function MENU:Show()
 	if ( !LocalPlayer():EV_HasPrivilege( "Menu" ) ) then return end
 	if ( !self.Panel ) then MENU:Initialize() end
 
-	table.SortByMember( self.Tabs, "Sort", true )
+	if (!self.TabsAdded) then
+		table.SortByMember( self.Tabs, "Sort", true )
 
-	for _, tab in ipairs( self.Tabs ) do
-		self.TabContainer:AddSheet( tab.Title, tab.Panel, tab.Icon, false, false, tab.Description )
+		for _, tab in ipairs( self.Tabs ) do
+			self.TabContainer:AddSheet( tab.Title, tab.Panel, tab.Icon, false, false, tab.Description )
+		end
+
+		self.TabsAdded = true
 	end
 
 	for _, tab in ipairs( MENU.Tabs ) do

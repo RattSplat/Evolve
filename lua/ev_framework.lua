@@ -25,7 +25,7 @@ evolve.category.actions = 2
 evolve.category.punishment = 3
 evolve.category.teleportation = 4
 evolve.plugins = {}
-evolve.version = 183
+evolve.version = 184
 
 /*-------------------------------------------------------------------------------------------------------------------------
 	Messages and notifications
